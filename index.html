@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<body>
+
+<h1>Woof Woof!</h1>
+
+<button onclick="drawChart()">Click me</button>
+
+<div id="piechart"></div>
+
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<script type="text/javascript">
+
+var list;
+
+var getJSON = function(url) {
+  return new Promise(function(resolve, reject) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('get', url, true);
+    xhr.responseType = 'json';
+    xhr.onload = function() {
+      var status = xhr.status;
+      if (status == 200) {
+        resolve(xhr.response);
+      } else {
+        reject(status);
+      }
+    };
+    xhr.send();
+  });
+};
+
+
+// Testing grabbing data from variable
+// var list = [
+// 	['Dog Breed', 'Number of images'],
+// 	['Yorkie', 10],
+// 	['Poodle', 5]
+// ]
+
+getJSON('http://localhost:5000/api/dog_info').then(function(data) {
+      list = data.dog_info
+      console.log(data.dog_info)
+  })
+
+
+
+// Load google charts
+google.charts.load('current', {'packages':['corechart']});
+
+// Draw the chart and set the chart values
+function drawChart() {
+
+
+  var data = google.visualization.arrayToDataTable(list);
+
+  // Set Title of Pie chart
+  var options = {'title':'Images By Dog Breed', 'width':550, 'height':400};
+
+  // Display the chart inside the <div> element with id="piechart"
+  var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+  chart.draw(data, options);
+}
+</script>
+
+</body>
+</html>
